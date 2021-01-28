@@ -1,3 +1,6 @@
+```
+branch dev:add new feture to enhance go mod
+```
 <p align="center">
   <a href="https://github.com/crazy-max/xgo/releases/latest"><img src="https://img.shields.io/github/release/crazy-max/xgo.svg?style=flat-square" alt="GitHub release"></a>
   <a href="https://github.com/crazy-max/xgo/releases/latest"><img src="https://img.shields.io/github/downloads/crazy-max/xgo/total.svg?style=flat-square" alt="Total downloads"></a>
