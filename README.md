@@ -1,81 +1,26 @@
-<p align="center">
-  <a href="https://github.com/crazy-max/xgo/releases/latest"><img src="https://img.shields.io/github/release/crazy-max/xgo.svg?style=flat-square" alt="GitHub release"></a>
-  <a href="https://github.com/crazy-max/xgo/releases/latest"><img src="https://img.shields.io/github/downloads/crazy-max/xgo/total.svg?style=flat-square" alt="Total downloads"></a>
-  <a href="https://github.com/crazy-max/xgo/actions?workflow=build"><img src="https://img.shields.io/github/workflow/status/crazy-max/xgo/build?label=build&logo=github&style=flat-square" alt="Build Status"></a>
-  <a href="https://hub.docker.com/r/crazymax/xgo/"><img src="https://img.shields.io/docker/stars/crazymax/xgo.svg?style=flat-square" alt="Docker Stars"></a>
-  <a href="https://hub.docker.com/r/crazymax/xgo/"><img src="https://img.shields.io/docker/pulls/crazymax/xgo.svg?style=flat-square" alt="Docker Pulls"></a>
-  <br /><a href="https://github.com/sponsors/crazy-max"><img src="https://img.shields.io/badge/sponsor-crazy--max-181717.svg?logo=github&style=flat-square" alt="Become a sponsor"></a>
-  <a href="https://www.paypal.me/crazyws"><img src="https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square" alt="Donate Paypal"></a>
-</p>
+```
+first of all thanks creazy-max
+i'm hurry to change the code to fit my case;
+my code structure:
+    - [ ] go.mod
+    - [ ] src
+        - [ ] portals ------------------->
+            - [ ] api -------------------> project1:main1.go
+            - [ ] console ---------------> project2:main2.go
 
-## Fork
 
-This repository is a fork of [karalabe/xgo](https://github.com/karalabe/xgo) to push images and tags to a single
-docker repository on several registries to make things more consistent for users:
+go mod situation:
+xgo command: 	xgo -go 1.15.2 -mod true -targets $TARGETS -buildDir $buildDir -goPath $GOPATH -goproxy $GOPROXY -out $out -pkg $pkg .(project absolut path)
+the convert docker command: docker run --rm -v xx(act:$buildDir):/build -v /tmp/xgo-cache(not used):/deps-cache:ro -e REPO_REMOTE=
+-e REPO_BRANCH= -e PACK=/src/portals/lvms -e DEPS= -e ARGS= -e OUT=xx($pkg) -e FLAG_V=false -e FLAG_X=false -e FLAG_RACE=false
+-e FLAG_TAGS= -e FLAG_LDFLAGS= -e FLAG_BUILDMODE=default -e TARGETS=linux/amd64 -e GOPROXY=https://goproxy.cn
+-v xx($GOPATH):/cache -e GOPATH=/cache -e GO111MODULE=on -v xx($buildDir):/source crazymax/xgo:1.15.2 .(project absolut path)
 
-| Registry                                                                                         | Image                           |
-|--------------------------------------------------------------------------------------------------|---------------------------------|
-| [Docker Hub](https://hub.docker.com/r/crazymax/xgo/)                                            | `crazymax/xgo`                 |
-| [GitHub Container Registry](https://github.com/users/crazy-max/packages/container/package/xgo)  | `ghcr.io/crazy-max/xgo`        |
-
-I use [GitHub Actions](https://github.com/crazy-max/xgo/actions) and his
-[matrix strategy](https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix) to
-build the images instead of using automated builds of Docker Hub (see [workflows](.github/workflows) folder).
-
-This also creates a [standalone xgo executable](https://github.com/crazy-max/xgo/releases/latest) that can be used on
-many platforms.
-
-## About
-
-Although Go strives to be a cross platform language, cross compilation from one
-platform to another is not as simple as it could be, as you need the Go sources
-bootstrapped to each platform and architecture.
-
-The first step towards cross compiling was Dave Cheney's [golang-crosscompile](https://github.com/davecheney/golang-crosscompile)
-package, which automatically bootstrapped the necessary sources based on your
-existing Go installation. Although this was enough for a lot of cases, certain
-drawbacks became apparent where the official libraries used CGO internally: any
-dependency to third party platform code is unavailable, hence those parts don't
-cross compile nicely (native DNS resolution, system certificate access, etc).
-
-A step forward in enabling cross compilation was Alan Shreve's [gonative](https://github.com/inconshreveable/gonative)
-package, which instead of bootstrapping the different platforms based on the
-existing Go installation, downloaded the official pre-compiled binaries from the
-golang website and injected those into the local toolchain. Since the pre-built
-binaries already contained the necessary platform specific code, the few missing
-dependencies were resolved, and true cross compilation could commence... of pure
-Go code.
-
-However, there was still one feature missing: cross compiling Go code that used
-CGO itself, which isn't trivial since you need access to OS specific headers and
-libraries. This becomes very annoying when you need access only to some trivial
-OS specific functionality (e.g. query the CPU load), but need to configure and
-maintain separate build environments to do it.
-
-## Documentation
-
-* [Enter xgo](doc/enter-xgo.md)
-* [Installation](doc/installation.md)
-* [Usage](doc/usage.md)
-  * [Build flags](doc/usage/build-flags.md)
-  * [Go releases](doc/usage/go-releases.md)
-  * [Output prefixing](doc/usage/output-prefixing.md)
-  * [Branch selection](doc/usage/branch-selection.md)
-  * [Remote selection](doc/usage/remote-selection.md)
-  * [Package selection](doc/usage/package-selection.md)
-  * [Limit build targets](doc/usage/limit-build-targets.md)
-  * [Platform versions](doc/usage/platform-versions.md)
-  * [CGO dependencies](doc/usage/cgo-dependencies.md)
-
-## How can I help?
-
-All kinds of contributions are welcome :raised_hands:! The most basic way to show your support is to star :star2:
-the project, or to raise issues :speech_balloon: You can also support this project by
-[**becoming a sponsor on GitHub**](https://github.com/sponsors/crazy-max) :clap: or by making
-a [Paypal donation](https://www.paypal.me/crazyws) to ensure this journey continues indefinitely! :rocket:
-
-Thanks again for your support, it is much appreciated! :pray:
-
-## License
-
-MIT. See `LICENSE` for more details.
+not go mod situation:
+xgo -go 1.15.2 -mod false -targets $TARGETS -buildDir $buildDir -goPath $GOPATH -goproxy $GOPROXY -out $APPNAME xx(project absolut path)
+Docker run --rm -v $buildDir:/build
+-v /tmp/xgo-cache:/deps-cache:ro -e REPO_REMOTE= -e REPO_BRANCH= -e PACK= -e DEPS= -e ARGS=
+-e OUT=lvms -e FLAG_V=false -e FLAG_X=false -e FLAG_RACE=false -e FLAG_TAGS= -e FLAG_LDFLAGS=
+-e FLAG_BUILDMODE=default -e TARGETS=linux/amd64 -e GOPROXY=https://goproxy.cn
+-v $GOPATH:/cache -e GOPATH=/cache crazymax/xgo:1.15.2 xx(project absolut path)
+```
